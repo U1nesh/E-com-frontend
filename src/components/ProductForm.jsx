@@ -1,8 +1,6 @@
-// mern-frontend/src/components/ProductForm.jsx
-
 import React, { useState, useEffect } from 'react';
 import { productAPI } from '../services/api'; 
-import '../ProductStyles.css'; // Import CSS for form styling
+import '../ProductStyles.css';
 
 const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit }) => {
     
@@ -13,7 +11,6 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // useEffect to Handle Editing Mode (Pre-filling the form)
     useEffect(() => {
         if (editingProduct) {
             setFormData({
@@ -30,7 +27,6 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
         setError(null);
     }, [editingProduct]); 
 
-    // Handler for input changes
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -39,7 +35,6 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
         setError(null); 
     };
 
-    // Form Submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -47,7 +42,6 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
 
         const submissionData = {
             ...formData,
-            // Ensure price and stock are sent as numbers
             price: parseFloat(formData.price),
             stock: parseInt(formData.stock),
         };
@@ -56,27 +50,22 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
             let resultProduct;
             
             if (editingProduct) {
-                // UPDATE LOGIC
                 resultProduct = await productAPI.updateProduct(editingProduct._id, submissionData);
                 alert(`Product '${resultProduct.name}' updated successfully!`);
             } else {
-                // CREATE LOGIC
                 resultProduct = await productAPI.createProduct(submissionData);
                 alert(`Product '${resultProduct.name}' added successfully!`);
             }
             
-            // Success Action 1: Notify the parent component (Home.jsx) to refresh the list
             if (onProductOperationComplete) {
                 onProductOperationComplete(); 
             }
             
-            // Success Action 2: Close the modal/form
             if (onCancelEdit) { 
                  onCancelEdit();
             }
 
         } catch (err) {
-            // Handle and display error message from the server
             setError(err.message || 'An unexpected error occurred during submission.');
             console.error("Submission error:", err);
 
@@ -85,7 +74,6 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
         }
     };
 
-    // Determine the title and button text based on mode
     const formTitle = editingProduct ? 'Edit Product' : 'Add New Product';
     const submitButtonText = editingProduct ? 'Save Changes' : 'Add Product';
 
@@ -106,7 +94,6 @@ const ProductForm = ({ onProductOperationComplete, editingProduct, onCancelEdit 
                     {loading ? (editingProduct ? 'Updating...' : 'Adding...') : submitButtonText}
                 </button>
                 
-                {/* Cancel Button inside the form container */}
                 {(editingProduct || !editingProduct) && (
                     <button 
                         type="button" 

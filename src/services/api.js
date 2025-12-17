@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 export const productAPI = {
-    // GET
+
     getAllProducts: async () => {
         try {
             const response = await api.get('/getproduct');
@@ -21,7 +21,7 @@ export const productAPI = {
         }
     },
 
-    // POST
+
     createProduct: async (productData) => {
         try {
             const response = await api.post('/postProduct', productData);
@@ -32,7 +32,7 @@ export const productAPI = {
         }
     },
 
-    // PUT
+
     updateProduct: async (id, productData) => {
         try {
             const response = await api.put(`/updateProduct/${id}`, productData);
@@ -43,7 +43,7 @@ export const productAPI = {
         }
     },
 
-    // DELETE
+
     deleteProduct: async (id) => {
         try {
             const response = await api.delete(`/deleteProduct/${id}`);
