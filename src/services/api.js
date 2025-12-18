@@ -1,65 +1,45 @@
 import axios from 'axios';
 
-// Use environment variable `VITE_API_URL` for flexibility.
-// Compute a safe fallback without accessing `location` at module-eval time (avoids SSR/build errors).
-// Behavior:
-// - If `VITE_API_URL` is set, use it.
-// - If in a browser and hostname is `localhost`, default to http://localhost:5001/api for local backend.
-// - Otherwise use a relative `/api` so deployed apps can proxy to their backend.
-const isBrowser = typeof window !== 'undefined' && window?.location;
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? (isBrowser && window.location.hostname === 'localhost' ? 'http://localhost:5001/api' : '/api');
-
-const api = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+const API_URL = 'http://3.110.222.100:5001/api';
 
 export const productAPI = {
-    // GET
+    // 1. READ: Get all products from the backend
     getAllProducts: async () => {
         try {
-            const response = await api.get('/getproduct');
-            return response.data; 
+            const response = await axios.get(`${API_URL}/getproduct`);
+            return response.data;
         } catch (error) {
-            console.error("Error fetching all products:", error);
-            throw error;
+            throw new Error(error.response?.data?.message || "Could not fetch products");
         }
     },
 
-    // POST
+    // 2. CREATE: Add a new product
     createProduct: async (productData) => {
         try {
-            const response = await api.post('/postProduct', productData);
+            const response = await axios.post(`${API_URL}/createproduct`, productData);
             return response.data;
         } catch (error) {
-            console.error("Error creating product:", error);
-            throw error.response?.data?.error || new Error("Failed to create product");
+            throw new Error(error.response?.data?.message || "Could not create product");
         }
     },
 
-    // PUT
+    // 3. UPDATE: Edit an existing product
     updateProduct: async (id, productData) => {
         try {
-            const response = await api.put(`/updateProduct/${id}`, productData);
+            const response = await axios.put(`${API_URL}/updateproduct/${id}`, productData);
             return response.data;
         } catch (error) {
-            console.error(`Error updating product ID ${id}:`, error);
-            throw error.response?.data?.error || new Error("Failed to update product");
+            throw new Error(error.response?.data?.message || "Could not update product");
         }
     },
 
-    // DELETE
+    // 4. DELETE: Remove a product
     deleteProduct: async (id) => {
         try {
-            const response = await api.delete(`/deleteProduct/${id}`);
+            const response = await axios.delete(`${API_URL}/deleteproduct/${id}`);
             return response.data;
         } catch (error) {
-            console.error(`Error deleting product ID ${id}:`, error);
-            throw error.response?.data?.error || new Error("Failed to delete product");
+            throw new Error(error.response?.data?.message || "Could not delete product");
         }
-    },
+    }
 };
-
-export default api;
