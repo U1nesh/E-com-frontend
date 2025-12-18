@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://3.110.222.100:5001/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 
 export const productAPI = {
     // 1. READ: Get all products from the backend
