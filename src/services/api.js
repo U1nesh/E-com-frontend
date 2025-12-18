@@ -1,10 +1,13 @@
 import axios from 'axios';
 
 // Use environment variable `VITE_API_URL` for flexibility.
-// Fallbacks:
-// - If running on localhost, default to http://localhost:5001/api so local backend (port 5001) is used.
-// - Otherwise use a relative `/api` path so deployments that proxy API calls to a backend work without changes.
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? (location.hostname === 'localhost' ? 'http://localhost:5001/api' : '/api');
+// Compute a safe fallback without accessing `location` at module-eval time (avoids SSR/build errors).
+// Behavior:
+// - If `VITE_API_URL` is set, use it.
+// - If in a browser and hostname is `localhost`, default to http://localhost:5001/api for local backend.
+// - Otherwise use a relative `/api` so deployed apps can proxy to their backend.
+const isBrowser = typeof window !== 'undefined' && window?.location;
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? (isBrowser && window.location.hostname === 'localhost' ? 'http://localhost:5001/api' : '/api');
 
 const api = axios.create({
     baseURL: API_BASE_URL,
