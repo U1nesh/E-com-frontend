@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-
+const API_URL = 'https://cors-anywhere.herokuapp.com/http://3.108.58.225:5001/api';
 export const productAPI = {
     // 1. READ: Get all products from the backend
     getAllProducts: async () => {
